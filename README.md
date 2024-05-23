@@ -8,3 +8,4 @@ Esta es una aplicación web interactiva creada con Streamlit para visualizar y a
 - **Histograma del Odómetro**: Permite a los usuarios generar un histograma interactivo que muestra la distribución de los valores del odómetro de los coches en el conjunto de datos.
 - **Gráfico de Dispersión Precio vs Odómetro**: Permite a los usuarios generar un gráfico de dispersión que muestra la relación entre el precio de los coches y los valores del odómetro.
 
+https://readme-2.onrender.com
