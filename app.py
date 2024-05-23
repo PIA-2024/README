@@ -1,53 +1,33 @@
 import pandas as pd
-import scipy.stats
+import plotly.express as px
 import streamlit as st
-import time
 
-# estas son variables de estado que se conservan cuando Streamlin vuelve a ejecutar este script
-if 'experiment_no' not in st.session_state:
-    st.session_state['experiment_no'] = 0
+# Leer el archivo CSV
+car_data = pd.read_csv('DATASETS/vehicles_us.csv')  # Asegúrate de que el archivo CSV esté en el mismo directorio que app.py
 
-if 'df_experiment_results' not in st.session_state:
-    st.session_state['df_experiment_results'] = pd.DataFrame(columns=['no', 'iteraciones', 'media'])
+# Crear un encabezado para la aplicación
+st.header('Cuadro de Mandos de Anuncios de Venta de Coches')
 
-st.header('Lanzar una moneda')
+# Crear una casilla de verificación para el histograma
+build_histogram = st.checkbox('Construir un histograma')
 
-chart = st.line_chart([0.5])
+if build_histogram:  # Si la casilla de verificación está seleccionada
+    st.write('Construir un histograma para la columna odómetro')
+    
+    # Crear un histograma
+    fig_hist = px.histogram(car_data, x='odometer')
+    
+    # Mostrar el histograma
+    st.plotly_chart(fig_hist, use_container_width=True)
 
-def toss_coin(n):
+# Crear una casilla de verificación para el gráfico de dispersión
+build_scatter = st.checkbox('Construir un gráfico de dispersión')
 
-    trial_outcomes = scipy.stats.bernoulli.rvs(p=0.5, size=n)
-
-    mean = None
-    outcome_no = 0
-    outcome_1_count = 0
-
-    for r in trial_outcomes:
-        outcome_no +=1
-        if r == 1:
-            outcome_1_count += 1
-        mean = outcome_1_count / outcome_no
-        chart.add_rows([mean])
-        time.sleep(0.05)
-
-    return mean
-
-number_of_trials = st.slider('¿Número de intentos?', 1, 1000, 10)
-start_button = st.button('Ejecutar')
-
-if start_button:
-    st.write(f'Experimento con {number_of_trials} intentos en curso.')
-    st.session_state['experiment_no'] += 1
-    mean = toss_coin(number_of_trials)
-    st.session_state['df_experiment_results'] = pd.concat([
-        st.session_state['df_experiment_results'],
-        pd.DataFrame(data=[[st.session_state['experiment_no'],
-                            number_of_trials,
-                            mean]],
-                     columns=['no', 'iterations', 'mean'])
-        ],
-        axis=0)
-    st.session_state['df_experiment_results'] 
-    st.session_state['df_experiment_results'].reset_index(drop=True)
-
-st.write(st.session_state['df_experiment_results'])
+if build_scatter:  # Si la casilla de verificación está seleccionada
+    st.write('Construir un gráfico de dispersión para las columnas precio y odómetro')
+    
+    # Crear un gráfico de dispersión
+    fig_scatter = px.scatter(car_data, x='odometer', y='price', title='Precio vs Odómetro')
+    
+    # Mostrar el gráfico de dispersión
+    st.plotly_chart(fig_scatter, use_container_width=True)
